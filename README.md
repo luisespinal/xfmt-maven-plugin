@@ -1,6 +1,16 @@
-[![Build Status](https://travis-ci.org/coveo/fmt-maven-plugin.svg?branch=master)](https://travis-ci.org/coveo/fmt-maven-plugin)
+## xfmt-maven-plugin
+
+This is a fork I made off [coveo/fmt-maven-plugin](https://github.com/coveo/fmt-maven-plugin). Reason is simple. I like the google style, but I care very little for the 2-space indentation rule. So I cloned this with the express purpose of getting a 4-space indentation.
+
+The indentation rule is perhaps the one that triggers developers the most. And in my experience, the majority of developers prefer 4 (or 3) spaces. I haven't seen one developer that prefers 2 spaces since, let me think, perhaps 1994.
+
+It is a lot easier to get developers to agree upon using a style (or forced them) if indentation resembles something that they are accostumed with.
+
+I might add a Maven plugin attribute/parameter to control indentation, but for the time being, it will be 4.
+
+Also, for the time being, I leave most of the original project's info below.
+
 [![license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/coveo/fmt-maven-plugin/blob/master/LICENSE)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.coveo/fmt-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.coveo/fmt-maven-plugin)
 
 ## fmt-maven-plugin 
 
