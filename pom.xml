@@ -45,8 +45,6 @@
     </distributionManagement>
 
     <properties>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
         <me>luisespinal/${project.artifactId}</me>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sortpom.version>2.4.0</sortpom.version>
@@ -67,7 +65,7 @@
         <dependency>
             <groupId>com.google.googlejavaformat</groupId>
             <artifactId>google-java-format</artifactId>
-            <version>1.7</version>
+            <version>1.1</version>
         </dependency>
 
         <dependency>
@@ -193,8 +191,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
             <plugin>

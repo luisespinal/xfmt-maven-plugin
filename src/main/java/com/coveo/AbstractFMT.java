@@ -1,26 +1,32 @@
 package com.coveo;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.CharSource;
-import com.google.googlejavaformat.java.*;
-import com.google.googlejavaformat.java.RemoveUnusedImports.JavadocOnlyImports;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Parameter;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.CharSource;
+import com.google.googlejavaformat.java.Formatter;
+import com.google.googlejavaformat.java.FormatterException;
+import com.google.googlejavaformat.java.ImportOrderer;
+import com.google.googlejavaformat.java.JavaFormatterOptions;
+import com.google.googlejavaformat.java.RemoveUnusedImports;
+import com.google.googlejavaformat.java.RemoveUnusedImports.JavadocOnlyImports;
 
 public abstract class AbstractFMT extends AbstractMojo {
 
@@ -132,13 +138,41 @@ public abstract class AbstractFMT extends AbstractMojo {
     return filesProcessed;
   }
 
-  public void formatSourceFilesInDirectory(File directory, Formatter formatter)
+  public void formatSourceFilesInDirectory(final File directory, final Formatter formatter)
       throws MojoFailureException {
+      
     if (!directory.isDirectory()) {
       getLog().info("Directory '" + directory + "' is not a directory. Skipping.");
       return;
     }
+    
+    final FileFilter javaSourceCodeFilter = getFileFilter();
 
+    try {
+        walkFileTree(directory, new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
+                    throws IOException {
+                final Path p = file.normalize();
+                if (verbose) {
+                    getLog().debug("Visiting: " + p.toString());
+                }
+                if (attrs.isRegularFile()) {
+                    final File f = p.toFile();
+                    if (javaSourceCodeFilter.accept(f)) {
+                        formatSourceFile(f, formatter);
+                    } 
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        });
+    } catch (final UnsupportedOperationException e) {
+        throw new MojoFailureException(e.getMessage(), e);
+    } catch (final IOException e) {
+        throw new MojoFailureException(e.getMessage(), e);
+    }
+    /*
     try (Stream<Path> paths = Files.walk(Paths.get(directory.getPath()))) {
       paths
           .collect(Collectors.toList())
@@ -150,7 +184,19 @@ public abstract class AbstractFMT extends AbstractMojo {
     } catch (IOException exception) {
       throw new MojoFailureException(exception.getMessage());
     }
+    */
   }
+
+/**
+ * @param directory
+ * @param visitor
+ * @return
+ * @throws IOException
+ */
+protected Path walkFileTree(File directory,
+        final SimpleFileVisitor<Path> visitor) throws IOException {
+    return Files.walkFileTree(Paths.get(directory.getPath()), EnumSet.noneOf(FileVisitOption.class), Integer.MAX_VALUE, visitor);
+}
 
   private JavaFormatterOptions.Style style() throws MojoFailureException {
     if ("aosp".equalsIgnoreCase(style)) {
