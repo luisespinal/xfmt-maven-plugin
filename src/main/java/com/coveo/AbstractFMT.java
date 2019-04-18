@@ -65,7 +65,7 @@ public abstract class AbstractFMT extends AbstractMojo {
   @Parameter(defaultValue = "false", property = "skipSortingImports")
   private boolean skipSortingImports = false;
 
-  @Parameter(defaultValue = "google", property = "style")
+  @Parameter(defaultValue = "aosp", property = "style")
   private String style;
 
   private List<String> filesProcessed = new ArrayList<String>();
@@ -172,19 +172,6 @@ public abstract class AbstractFMT extends AbstractMojo {
     } catch (final IOException e) {
         throw new MojoFailureException(e.getMessage(), e);
     }
-    /*
-    try (Stream<Path> paths = Files.walk(Paths.get(directory.getPath()))) {
-      paths
-          .collect(Collectors.toList())
-          .parallelStream()
-          .filter(Files::isRegularFile)
-          .map(Path::toFile)
-          .filter((file) -> getFileFilter().accept(file))
-          .forEach(file -> formatSourceFile(file, formatter));
-    } catch (IOException exception) {
-      throw new MojoFailureException(exception.getMessage());
-    }
-    */
   }
 
 /**
