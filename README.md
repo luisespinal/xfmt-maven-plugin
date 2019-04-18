@@ -1,3 +1,5 @@
+[![license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/luisespinal/xfmt-maven-plugin/blob/master/LICENSE)
+
 ## xfmt-maven-plugin
 
 This is a fork I made off [coveo/fmt-maven-plugin](https://github.com/coveo/fmt-maven-plugin) so that it works on Java 1.7 and to make aosp the default style.
@@ -8,11 +10,60 @@ There are other changes I intend to make that will further deviate this from the
 
 I hope you find this "deviant" plugin useful :) 
 
-Internal package names remain the same.
+Original package names remain the same (to acknowledge original authors.)
 
-[![license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/coveo/fmt-maven-plugin/blob/master/LICENSE)
+## Configuration
 
-## fmt-maven-plugin 
+You could do someting like this:
+
+            <properties>
+                <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
+            </properties>
+            <build>
+                ...
+                <plugin>
+                    <groupId>io.github.luisespinal</groupId>
+                    <artifactId>xfmt-maven-plugin</artifactId>
+                    <version>1.0.0-M1</version>
+                    <executions>
+                        <execution>
+                            <id>apply-code-style</id>
+                            <phase>generate-sources</phase>
+                            <!--
+                            Or "process-sources" if you want to format
+                            generated sources.
+                            -->
+                            <goals>
+                                <goal>format</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>validate-code-style</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <additionalSourceDirectories>
+                            <!-- you will need this if
+                                 you want to format generated
+                                 sources
+                             -->
+                            <param>${outputDirectory}</param>
+                        </additionalSourceDirectories>
+                        <style>aosp</style><!--  the default -->
+                    </configuration>
+                </plugin>
+                
+                ...
+                
+            </build>
+
+
+
+## fmt-maven-plugin (Original content from parent project, from where this project was forked from)
 
 Formats your code using [google-java-format](https://github.com/google/google-java-format) which follows [Google's code styleguide](https://google.github.io/styleguide/javaguide.html).
 
